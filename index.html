@@ -25,6 +25,8 @@
             border: 2px solid #f48fb1;
             max-width: 420px;
             width: 90%;
+            position: relative;
+            z-index: 10;
         }
 
         h1 {
@@ -90,7 +92,7 @@
 <body>
 
     <div style="display:none">
-        <iframe id="audioPlayer" width="0" height="0" src="https://www.youtube.com/embed/S_8n0mN_o6U?enablejsapi=1" frameborder="0"></iframe>
+        <div id="player"></div>
     </div>
 
     <div id="container">
@@ -113,23 +115,38 @@
     </div>
 
     <script>
-        function playMusic() {
-            const iframe = document.getElementById('audioPlayer');
-            iframe.src += "&autoplay=1";
+        // Load YouTube API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: 'lSu86ELwCIc', // Your requested Justin Bieber video ID
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0
+                }
+            });
         }
 
         function moveButton() {
             const btn = document.getElementById('noBtn');
             const x = Math.random() * (window.innerWidth - btn.offsetWidth);
             const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            
             btn.style.position = 'fixed';
             btn.style.left = x + 'px';
             btn.style.top = y + 'px';
         }
 
         function celebrate() {
-            playMusic();
+            if (player && player.playVideo) {
+                player.playVideo();
+            }
             document.getElementById('askSection').style.display = 'none';
             document.getElementById('successSection').style.display = 'block';
             
